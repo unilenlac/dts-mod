@@ -1,0 +1,31 @@
+
+{
+    "servers": {
+        "webapp": {
+            "server": "http://127.0.0.1:8082/exist",
+            "user": "enlac",
+            "password": "",
+            "root": "/apps/jinks/profiles/dts-mod"
+        }
+    },
+    "sync": {
+        "dir": "../../apps/tei-dts-module",
+        "server": "webapp",
+        "polling": false,
+        "interval": 500,
+        "ignore": [
+            ".existdb.json",
+            ".devcontainer/**",
+            ".vscode/**",
+            "build.sh",
+            ".env",
+            ".git/**",
+            "components/**",
+            "node_modules/**",
+            "bower_components/**",
+            "build/**",
+            "webtest/**",
+            ".gitignore"
+        ]
+    }
+}

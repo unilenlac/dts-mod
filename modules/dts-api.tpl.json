@@ -1,0 +1,378 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "version": "1.0.0",
+        "title": "dts-mod – Custom API",
+        "description": "TEIpublisher dts-mod features endpoints"
+    },
+    "servers": [
+        {
+            "description": "Endpoint for testing on localhost",
+            "url": "/exists/apps/[[$pkg?abbrev]]"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            },
+            "cookieAuth": {
+                "type": "apiKey",
+                "name": "teipublisher.com.login",
+                "in": "cookie"
+            }
+        }
+    },
+    "tags": [
+    	{
+    		"name": "dmod",
+    		"description": "dts-mod endpoints"
+    	}
+    ],
+    "paths": {
+        "/{docid}": {
+			"get": {
+				"summary": "Retrieve the HTML template used for displaying a document",
+				"description": "Get the HTML template associated with the given document. This is called whenever the users tries to view a document. The actual content of the document will then be loaded by the template.",
+				"tags": ["dmod"],
+				"operationId": "vapi:view",
+				"x-error-handler": "vapi:handle-error",
+				"parameters": [
+					{
+						"name": "docid",
+						"in": "path",
+						"description": "Relative path to the document",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"example": "test/orlik_to_serafin.xml"
+						},
+						"allowReserved": true
+					},
+					{
+						"name": "template",
+						"in": "query",
+						"description": "Name of the template to be used. Overwrites any default template setting.",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "view",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"enum": ["page", "div", "single"]
+						},
+						"example": "div",
+						"description": "The view type used by the main view which displays the document, e.g. 'page' or 'div'. This has an influence on the generated links, which need to differ when linking to a page rather than a section."
+					},
+					{
+						"name": "odd",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "action",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "HTML view for the document",
+						"content": {
+							"text/html": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "The document was not found",
+						"content": {
+							"text/html": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "An error occurred",
+						"content": {
+							"text/html": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/collection/{path}": {
+				"get": {
+					"summary": "Get formatted overview of documents in the collection",
+					"tags": ["dmod"],
+					"operationId": "dmodapi:list",
+					"parameters": [
+						{
+							"name": "path",
+							"in": "path",
+							"required": true,
+							"schema": {
+								"type": "string",
+								"example": "test"
+							}
+						},
+						{
+							"name": "start",
+							"in": "query",
+							"schema": {
+								"type": "integer",
+								"minimum": 1,
+								"default": 1
+							}
+						},
+						{
+							"name": "per-page",
+							"in": "query",
+							"schema": {
+								"type": "integer",
+								"minimum": 1,
+								"default": 10
+							}
+						},
+						{
+							"name": "format",
+							"in": "query",
+							"schema": {
+								"type": "string",
+								"enum": ["html", "json"],
+								"default": "html"
+							}
+						},
+						{
+							"name": "language",
+							"in": "query",
+							"schema": {
+								"type": "string",
+								"default": "en"
+							}
+						},
+						{
+							"name": "query",
+							"in": "query",
+							"schema": {
+								"type": "string"
+							}
+						},
+						{
+							"name": "field",
+							"in": "query",
+							"schema": {
+								"type": "string"
+							}
+						}
+					],
+					"responses": {
+						"200": {
+							"description": "Returns HTML describing the collection",
+							"content": {
+								"text/html": {
+									"schema": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+		"/api/collection": {
+			"get": {
+				"summary": "Get formatted overview of documents in the collection",
+				"tags": ["dmod"],
+				"operationId": "dmodapi:list",
+				"parameters": [
+					{
+						"name": "format",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"enum": ["html", "json"],
+							"default": "html"
+						}
+					},
+					{
+						"name": "start",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"default": 1
+						}
+					},
+					{
+						"name": "dts",
+						"in": "query",
+						"schema": {
+							"type": "boolean",
+							"default": false
+						}
+					},
+					{
+						"name": "per-page",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"default": 10
+						}
+					},
+					{
+						"name": "query",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "field",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "language",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"default": "en"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns HTML describing the collection",
+						"content": {
+							"text/html": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+    	"/api/document/{id}/contents": {
+			"get": {
+				"summary": "Retrieve a formatted table of contents for the document",
+				"description": "Retrieve a formatted table of contents for the document, transformed via ODD",
+				"tags": ["dmod"],
+				"operationId": "dmodapi:table-of-contents",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"example": "test/kant_rvernunft_1781.TEI-P5.xml"
+						}
+					},
+                    {
+                        "name": "collapse",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "description": "If true, the table of contents will be collapsed"
+                    },
+					{
+						"name": "odd",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"example": "teipublisher.odd"
+						}
+					},
+					{
+						"name": "view",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"enum": ["page", "div", "single"]
+						},
+						"example": "div",
+						"description": "The view type used by the main view which displays the document, e.g. 'page' or 'div'. This has an influence on the generated links, which need to differ when linking to a page rather than a section."
+					},
+					{
+						"name": "target",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						},
+						"description": "The target channel into which link selection events should be send (if the user clicks on a link)"
+					},
+					{
+						"name": "icons",
+						"in": "query",
+						"schema": {
+							"type": "boolean",
+							"default": true
+						},
+						"description": "Should an expand/collapse icon be displayed next to headings having nested child sections?"
+					},
+					{
+						"name": "If-Modified-Since",
+						"in": "header",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns the formatted table of contents as HTML",
+						"content": {
+							"text/html": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Document not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+    },
+    "security": [
+        {
+            "cookieAuth": []
+        },
+        {
+            "basicAuth": []
+        }
+    ]
+}

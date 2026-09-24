@@ -1,0 +1,19 @@
+{
+    "$schema": "../../schema/jinks.json",
+    "type": "feature",
+    "id": "https://e-editiones.org/app/tei-publisher/dts-mod",
+    "label": "dts-mod",
+    "description": "Add necessary components to retrieve data from a DTS api external endpoint, explore textual content trough a dts /navigation endpoint and more",
+    "version": "1.0.0",
+    "dts-mod": {
+        "dts-endpoint": "http://sources-ftsr.unil.ch/api/dts/v1"
+    },
+    "api": [
+        {
+            "spec": "dts-api.json",
+            "prefix": "dmodapi",
+            "path": "dts-api.xql",
+            "id": "http://teipublisher.com/api/dmodapi"
+        }
+    ]
+}
