@@ -26,8 +26,12 @@
     },
     "tags": [
     	{
-    		"name": "dmod",
-    		"description": "dts-mod endpoints"
+    		"name": "dmod-collection",
+    		"description": "dts-mod collection endpoints"
+    	},
+		{
+    		"name": "dmod-view",
+    		"description": "dts-mod view endpoints"
     	}
     ],
     "paths": {
@@ -35,9 +39,8 @@
 			"get": {
 				"summary": "Retrieve the HTML template used for displaying a document",
 				"description": "Get the HTML template associated with the given document. This is called whenever the users tries to view a document. The actual content of the document will then be loaded by the template.",
-				"tags": ["dmod"],
-				"operationId": "vapi:view",
-				"x-error-handler": "vapi:handle-error",
+				"tags": ["dmod-view"],
+				"operationId": "dmod-vapi:view",
 				"parameters": [
 					{
 						"name": "docid",
@@ -120,8 +123,8 @@
 		"/api/collection/{path}": {
 				"get": {
 					"summary": "Get formatted overview of documents in the collection",
-					"tags": ["dmod"],
-					"operationId": "dmodapi:list",
+					"tags": ["dmod-collection"],
+					"operationId": "dmod-capi:list",
 					"parameters": [
 						{
 							"name": "path",
@@ -199,8 +202,8 @@
 		"/api/collection": {
 			"get": {
 				"summary": "Get formatted overview of documents in the collection",
-				"tags": ["dmod"],
-				"operationId": "dmodapi:list",
+				"tags": ["dmod-collection"],
+				"operationId": "dmod-capi:list",
 				"parameters": [
 					{
 						"name": "format",
@@ -278,8 +281,8 @@
 			"get": {
 				"summary": "Retrieve a formatted table of contents for the document",
 				"description": "Retrieve a formatted table of contents for the document, transformed via ODD",
-				"tags": ["dmod"],
-				"operationId": "dmodapi:table-of-contents",
+				"tags": ["dmod-view"],
+				"operationId": "dmod-capi:table-of-contents",
 				"parameters": [
 					{
 						"name": "id",

@@ -1,11 +1,15 @@
 <ul>
     <h1>[[ $custom-config:dts-server ]]</h1>
-    [% for $work in $data?* %]
-        [% if 'resource' = lower-case($work?('@type')) %]
-        <li class="document"><a href="[[ $config:context-path || '/' || $work?('@id') ]]" type="[[ lower-case($work?('@type')) ]]">[[ $work?("title") ]]</a></li>
-        [% else %]
-        <li class="document"><a href="#" data-collection="[[ $work?('@id') ]]" type="[[ lower-case($work?('@type')) ]]">[[ $work?("title") ]]</a></li>
-        [% endif %]
-    [% endfor %]
+    [% if count($data?*) %]
+        [% for $work in $data?* %]
+            [% if 'resource' = lower-case($work?('@type')) %]
+            <li class="document"><a href="[[ $config:context-path || '/' || $work?('@id') ]]" type="[[ lower-case($work?('@type')) ]]">[[ $work?("title") ]]</a></li>
+            [% else %]
+            <li class="document"><a href="#" data-collection="[[ $work?('@id') ]]" type="[[ lower-case($work?('@type')) ]]">[[ $work?("title") ]]</a></li>
+            [% endif %]
+        [% endfor %]
+    [% else %]
+    <li>No works available</li>
+    [% endif %]
 </ul>
 
