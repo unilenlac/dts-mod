@@ -4,9 +4,9 @@ xquery version "3.1";
 module namespace dmod-capi="http://teipublisher.com/api/dmod-capi";
 
 import module namespace config="http://www.tei-c.org/tei-simple/config" at "config.xqm";
-import module namespace custom-config="http://www.tei-c.org/tei-simple/custom-config" at "./custom-config.xqm";
-import module namespace dts-client="http://www.tei-c.org/tei-publisher/dts-client" at "./dts-mod/dts-client.xql";
-import module namespace console="http://exist-db.org/xquery/console";
+import module namespace custom-config = "http://www.tei-c.org/tei-simple/custom-config" at "./custom-config.xqm";
+import module namespace dts-client = "http://www.tei-c.org/tei-publisher/dts-client" at "./dts-mod/dts-client.xql";
+import module namespace console = "http://exist-db.org/xquery/console";
 import module namespace vapi="http://teipublisher.com/api/view" at "view.xql";
 import module namespace tmpl="http://e-editiones.org/xquery/templates";
 
@@ -65,7 +65,6 @@ declare function dmod-capi:list-dts($request as map(*)) as element(div) {
         "data": $works
     }
     return (
-        console:log($full_path),
         response:set-header(
             "pb-start",
             xs:string($start)

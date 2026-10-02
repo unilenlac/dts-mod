@@ -29,7 +29,6 @@ declare function dmod-dapi:get-fragment($request as map(*)) {
 };
 
 declare function dmod-dapi:get-fragment($request as map(*), $docs as document-node()*, $path as xs:string) {
-    console:log("Entering dmod-dapi:get-fragment with path: " || $path),
     let $view := head(($request?parameters?view, $config:default-view))
     let $xml :=
         if (exists($request?parameters?id) and $request?parameters?id != "" and $request?parameters?view != 'single') then

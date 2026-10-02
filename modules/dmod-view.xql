@@ -96,7 +96,6 @@ declare function dmod-vapi:view($request as map(*)) {
             ))
             return
             (
-                console:log($templateName),
                 tmpl:process($templateContent, $model, map {
                     "plainText": false(),
                     "resolver": vapi:resolver#1,

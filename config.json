@@ -14,12 +14,6 @@
             "prefix": "dmod-vapi",
             "path": "dmod-view.xql",
             "id": "http://teipublisher.com/api/dmod-vapi"
-        },
-        {
-            "spec": "dts-api.json",
-            "prefix": "dmod-capi",
-            "path": "dmod-collection.xql",
-            "id": "http://teipublisher.com/api/dmod-capi"
         }
     ]
 }
