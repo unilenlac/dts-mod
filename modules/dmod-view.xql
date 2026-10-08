@@ -55,7 +55,8 @@ declare function dmod-vapi:view($request as map(*)) {
     (: view a single DTS resource :)
 
     let $docid := if (map:contains($request?parameters, "docid")) then $request?parameters?docid else ()
-    let $data := dts-client:get-resource($docid, ())
+    let $xmlid := if (map:contains($request?parameters, "xmlId")) then $request?parameters?xmlId else ()
+    let $data := dts-client:get-resource($docid, $xmlid)
     let $config := dmod-vapi:get-config($data, $request?parameters?view)
     let $templateName := head((dmod-vapi:get-template($config, $request?parameters?template), $config:default-template))
     let $templatePaths := ($config:app-root || "/templates/pages/" || $templateName, $config:app-root || "/templates/" || $templateName)

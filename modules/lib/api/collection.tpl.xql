@@ -12,10 +12,11 @@ import module namespace query="http://www.tei-c.org/tei-simple/query" at "../que
 import module namespace nav="http://www.tei-c.org/tei-simple/navigation" at "../navigation.xql";
 import module namespace router="http://e-editiones.org/roaster";
 import module namespace tmpl="http://e-editiones.org/xquery/templates";
+
 import module namespace console="http://exist-db.org/xquery/console";
 
-import module namespace custom-config = "http://www.tei-c.org/tei-simple/custom-config" at "./custom-config.xqm";
-import module namespace dts-client = "http://www.tei-c.org/tei-publisher/dts-client" at "./dts-mod/dts-client.xql";
+import module namespace custom-config = "http://www.tei-c.org/tei-simple/custom-config" at "../../custom-config.xqm";
+import module namespace dts-client = "http://www.tei-c.org/tei-publisher/dts-client" at "../../dts-mod/dts-client.xql";
 
 declare function capi:list($request as map(*)) {
         (: todo create a fallback in case the DTS is not available. the fallback will redirect to the capi:list function :)

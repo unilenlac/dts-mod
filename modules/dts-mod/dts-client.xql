@@ -113,7 +113,10 @@ declare function dts-client:get-resource(
     $id as xs:string,
     $ref as xs:string?
 ) as document-node() {
+    let $_ := console:log($id)
+    let $_ := console:log($ref)
     let $url := dts-client:resource-url($id, $ref)
+    let $_ := console:log($url)
     let $request :=
         <http:request
             method="GET"

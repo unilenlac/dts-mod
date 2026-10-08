@@ -2,9 +2,9 @@
 {
     "servers": {
         "webapp": {
-            "server": "http://127.0.0.1:8082/exist",
-            "user": "enlac",
-            "password": "",
+            "server": "http://127.0.0.1:8083/exist",
+            "user": "tei",
+            "password": "simple",
             "root": "/apps/jinks/profiles/dts-mod"
         }
     },

@@ -19,6 +19,7 @@ import module namespace docx="http://existsolutions.com/teipublisher/docx";
 import module namespace cutil="http://teipublisher.com/api/cache" at "caching.xql";
 
 import module namespace dts-client="http://www.tei-c.org/tei-publisher/dts-client" at "../../dts-mod/dts-client.xql";
+import module namespace dmod-util="http://www.ftsr.unil.ch/dts-mod/utils" at "../../dts-mod/utils.xql";
 
 import module namespace console="http://exist-db.org/xquery/console";
 
@@ -640,23 +641,50 @@ declare %private function dapi:extract-footnotes($html as element()*, $root as n
 };
 
 declare function dapi:table-of-contents($request as map(*)) {
+    let $_ := console:log($request?parameters)
     let $collapse := $request?parameters?collapse
-    let $doc := xmldb:decode-uri($request?parameters?id)
-    let $documents := config:get-document($doc)
+    let $docId := $request?parameters?id
+    let $navigation := dts-client:get-navigation($docId, (), -1)
+    return dapi:toc-any($navigation?member?*, $request?parameters?target, $collapse)
+};
+
+(: $items is a flat, document-ordered slice of DTS members; direct children of an entry are the following items with a deeper level. :)
+declare %private function dapi:toc-any($items as map(*)*, $target as xs:string?, $collapse as xs:boolean?) {
+    let $count := count($items)
+    let $level := min($items ! xs:integer(.?level))
     return
-        if($documents)
-        then (
-            cutil:check-last-modified($request, $documents, function($request as map(*), $documents as node()*) {
-                let $xml := pages:load-xml($documents, $request?parameters?view, (), $doc)
-                return
-                if (exists($xml)) then
-                    dapi:toc-div(root($xml?data), $xml, $request?parameters?target, $collapse)
-                else
-                    error($errors:NOT_FOUND, "Document " || $doc || " not found")
-                })
-        ) else (
-            router:response(404, "text/text", $doc)
-        )
+    <ul>
+    {
+        for $i in 1 to $count
+        let $nav := $items[$i]
+        where xs:integer($nav?level) = $level
+        let $next := (for $j in ($i + 1) to $count where xs:integer($items[$j]?level) <= $level return $j)[1]
+        let $end := if (exists($next)) then $next - 1 else $count
+        let $children := subsequence($items, $i + 1, $end - $i)
+        let $heading :=
+            <tei:head>
+                <tei:title>{$nav?citeType || " " || $nav?identifier}</tei:title>
+            </tei:head>
+        let $html := $pm-config:web-transform($heading, map { "mode": "toc" }, "tmpapp.odd")
+        let $hash := attribute hash { $nav?identifier }
+        let $hasChildren := exists($children)
+        return
+            <li>
+            {
+                dmod-util:toc-entry(
+                    map {
+                        "docId": $nav?identifier,
+                        "label": ($hash, $html),
+                        "subNav": $hasChildren,
+                        "target": $target
+                    },
+                    if ($hasChildren) then dapi:toc-any($children, $target, $collapse) else (),
+                    $collapse
+                )
+            }
+            </li>
+    }
+    </ul>
 };
 
 declare %private function dapi:toc-div($node, $model as map(*), $target as xs:string?,
