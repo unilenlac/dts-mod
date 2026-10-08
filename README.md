@@ -3,6 +3,9 @@
 Teipublisher profil that brings all dts components and features into your app.
 This profil is helping users that who need strict separation of concern and quick data source switching.
 
+This profil will replace the existdb retrieval logic. The "model" part of the architecture is replaced with remote server data.
+
+
 ### installation
 
 Use jinks with the ```dts-mod``` profile name
@@ -14,7 +17,7 @@ Profile config (default settings) :
 
 ```json   
  "dts-mod": {
-        "dts-endpoint": "http://host.docker.internal:8000/api/dts/v1/"
+     "dts-endpoint": "http://host.docker.internal:8000/api/dts/v1/"
     },
     "api": [
         {
@@ -25,3 +28,7 @@ Profile config (default settings) :
         }
     ]
 ```
+
+### todo
+
+- add allow multiple source selection (remote, local)
