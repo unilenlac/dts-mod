@@ -8,8 +8,11 @@ This profil will replace the existdb retrieval logic. The "model" part of the ar
 
 ### installation
 
-Use jinks with the ```dts-mod``` profile name
-depends on the ```base-10```profil
+Deploy the dts-mod folder in the jinks/profil folder. 
+
+Add the ```dts-mod``` profile name into the jinks config file trough the apps/jinks iinterface or the jinks API.
+
+**note:** run .existdb.json from vs code with the admin account first in order to open a connection to the existdb server and install the vscode applet. then switch to your account.
 
 ### properties 
 
