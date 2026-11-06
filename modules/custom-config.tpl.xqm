@@ -11,5 +11,6 @@ module namespace custom-config="http://www.tei-c.org/tei-simple/custom-config";
 declare variable $custom-config:template_path := "/templates/components/dts-collection-list.html";
 
 declare variable $custom-config:dts-server := "[[ $context?dts-mod?dts-endpoint ]]";
+declare variable $custom-config:public-dts-server := "[[ $context?dts-mod?public-dts-endpoint ]]";
 
 declare variable $custom-config:dts-root-collection := "collection";

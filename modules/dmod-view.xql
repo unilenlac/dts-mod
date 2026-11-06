@@ -28,6 +28,8 @@ import module namespace vapi="http://teipublisher.com/api/view" at "view.xql";
 import module namespace dts-client="http://www.tei-c.org/tei-publisher/dts-client" at "./dts-mod/dts-client.xql";
 import module namespace tpu="http://www.tei-c.org/tei-publisher/util" at "../lib/util.xql";
 import module namespace page="http://teipublisher.com/ns/templates/page" at "../../templates/page.xqm";
+
+import module namespace custom-config="http://www.tei-c.org/tei-simple/custom-config" at "custom-config.xqm";
 (:~
  : Keep this. This function does the actual lookup in the imported modules.
  :)
@@ -49,6 +51,53 @@ declare function dmod-vapi:lookup($name as xs:string, $arity as xs:integer) {
 
 declare function dmod-vapi:table-of-contents($request as map(*)) as node() {
     
+};
+
+(:~
+: Retrieve information about the available endpoints in the dts-mod module
+: @param $request a map representing the API request
+: @param $ref an optional reference to be included in the rendered HTML
+: @return a rendered HTML representing the endpoint information combined with the 'ref' parameter value, if provided
+:)
+declare function dmod-vapi:endpoint-infos($request as map(*)) as node()* {
+    let $resource := normalize-space($request?parameters?resource)
+    let $ref := normalize-space($request?parameters?ref)
+    let $templatePath := "/templates/components/dts-metadata-panel.html"
+    (: public-dts-server ends with a slash :)
+    let $documentLink :=
+        if ($resource ne "") then
+            $custom-config:public-dts-server || "document/?resource=" || encode-for-uri($resource)
+        else ""
+    let $excerptLink :=
+        if ($documentLink ne "" and $ref ne "") then
+            $documentLink || "&amp;ref=" || encode-for-uri($ref)
+        else ""
+    let $model := map:merge((
+        vapi:load-config-json($request),
+        map {
+            "server-link": $custom-config:public-dts-server,
+            "document-link": $documentLink,
+            "excerpt-link": $excerptLink
+        }
+    ))
+    return
+        if (doc-available($config:app-root || $templatePath)) then
+            tmpl:process(serialize(config:resolve($templatePath)), $model, map {
+                "plainText": false(),
+                "resolver": vapi:resolver#1,
+                "modules": map {
+                    "http://www.tei-c.org/tei-simple/config": map {
+                        "prefix": "config",
+                        "at": "modules/config.xqm"
+                    },
+                    "http://www.tei-c.org/tei-simple/custom-config": map {
+                        "prefix": "custom-config",
+                        "at": "modules/custom-config.xqm"
+                    }
+                }
+            })
+        else
+            <div>Template not available</div>
 };
 
 declare function dmod-vapi:view($request as map(*)) {
@@ -79,7 +128,8 @@ declare function dmod-vapi:view($request as map(*)) {
             let $config := tpu:parse-pi(root($data), $request?parameters?view, $request?parameters?odd)
             let $jsonConfig := vapi:load-config-json($request)
             let $mergedConfig := dmod-vapi:merge-config($jsonConfig, $config)
-
+            let $_ := console:log($docid)
+            let $_ := console:log($xmlid)
             let $model := map:merge((
                 $mergedConfig,
                 map {
@@ -104,6 +154,10 @@ declare function dmod-vapi:view($request as map(*)) {
                         "http://www.tei-c.org/tei-simple/config": map {
                             "prefix": "config",
                             "at": "modules/config.xqm"
+                        },
+                        "http://www.tei-c.org/tei-simple/custom-config": map {
+                            "prefix": "custom-config",
+                            "at": "modules/custom-config.xqm"
                         }
                     },
                     "namespaces": map {
@@ -111,12 +165,6 @@ declare function dmod-vapi:view($request as map(*)) {
                     }
                 })
             )
-        (:
-    return (
-        console:log($mergedConfig),
-        router:response(200, "application/xml", $data)
-    )
-        :)
 };
 
 (:~

@@ -8,7 +8,7 @@
     "servers": [
         {
             "description": "Endpoint for testing on localhost",
-            "url": "/exists/apps/[[$pkg?abbrev]]"
+            "url": "/exist/apps/[[$pkg?abbrev]]"
         }
     ],
     "components": {
@@ -31,6 +31,48 @@
     	}
     ],
     "paths": {
+		"/endpoint-infos": {
+			"get": {
+				"summary": "Retrieve endpoint information",
+				"description": "Get information about the available endpoints in the dts-mod module.",
+				"tags": ["dmod-view"],
+				"operationId": "dmod-vapi:endpoint-infos",
+				"parameters": [
+					{
+						"name": "resource",
+						"in": "query",
+						"description": "DTS resource identifier",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "bonnet-er"
+						}
+					},
+					{
+						"name": "ref",
+						"in": "query",
+						"description": "Passage reference used to build the excerpt link",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "bonnet-er"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Endpoint information",
+						"content": {
+							"text/html": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
         "/{docid}": {
 			"get": {
 				"summary": "Retrieve the HTML template used for displaying a document",

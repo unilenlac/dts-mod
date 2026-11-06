@@ -1,0 +1,201 @@
+.dts-endpoints { 
+    padding-left: 0;
+}
+.dts-endpoints li {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-left: 0;
+    transition: box-shadow 0.15s ease;
+}
+.dts-metadata-copy-button {
+    cursor: pointer;
+    --iron-icon-width: 20px;
+    --iron-icon-height: 20px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+.dts-metadata-copy-button:hover {
+    color: var(--paper-blue-700, #1976d2);
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #ccc;
+  border-radius: 28px;
+  transition: 0.3s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Checked state */
+.toggle input:checked + .slider {
+  background-color: #3b82f6; /* blue */
+}
+
+.toggle input:checked + .slider::before {
+  transform: translateX(10px);
+}
+
+/* Optional: focus style for accessibility */
+.toggle input:focus-visible + .slider {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 2px; /* space between elements */
+}
+
+.option-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.option-separator {
+  margin: 0 0.2rem;
+}
+
+dmod-toggle {
+  --dmod-toggle-width: 38px;
+  --dmod-toggle-height: 20px;
+  --dmod-toggle-thumb-size: 14px;
+  --dmod-toggle-off-color: #ccc;
+  --dmod-toggle-on-color: #3b82f6;
+}
+
+dmod-toggle::part(label) {
+  gap: 0.35rem;
+  color: #333;
+}
+
+dmod-toggle::part(switch) {
+  cursor: pointer;
+}
+
+.citation-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.citation-option {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  background: var(--jinks-colors-200);
+  color: #333;
+  cursor: pointer;
+}
+
+.citation-option:hover {
+  background: var(--jinks-colors-300);
+}
+.dmod-modal {
+  width: min(32rem, 90vw);
+  padding: 1rem 1.25rem 1.25rem;
+  border: none;
+  border-radius: 2px;
+  background: #ffffff1b;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+.dmod-modal-box {
+  display: flex;
+  flex-direction: column;
+  height: 50%;
+  width: 50%;
+  padding: 1rem;
+  border-radius: 0px;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.dmod-modal::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.dmod-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.dmod-modal-title {
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: #1f2937;
+}
+
+.dmod-modal-close {
+  display: inline-flex;
+  padding: 0.1rem;
+  border: none;
+  background: transparent;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.dmod-modal-text {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #6b7280;
+  border-radius: 0;
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.dmod-modal-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.dmod-modal-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px dotted transparent;
+  background: transparent;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.dmod-modal-copy:hover,
+.dmod-modal-copy:focus-visible {
+  border-color: #6b7280;
+  background: #f3f4f6;
+}

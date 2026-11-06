@@ -6,7 +6,23 @@
     "description": "Add necessary components to retrieve data from a DTS api external endpoint, explore textual content trough a dts /navigation endpoint and more",
     "version": "1.0.0",
     "dts-mod": {
-        "dts-endpoint": "http://host.docker.internal:8000/api/dts/v1/"
+        "dts-endpoint": "http://host.docker.internal:8000/api/dts/v1/",
+        "public-dts-endpoint": "http://localhost:8000/api/dts/v1/"
+    },
+    "script": {
+        "custom": [
+            "resources/scripts/metadata-panel.js",
+            "resources/scripts/dmod-toggle.js",
+            "resources/scripts/dmod-endpoint-infos.js"
+        ]
+    },
+    "styles": [
+        "resources/css/dts-elements.css"
+    ],
+    "templating": {
+        "use": [
+            "templates/metadata-panel.html"
+        ]
     },
     "api": [
         {
@@ -15,5 +31,16 @@
             "path": "dmod-view.xql",
             "id": "http://teipublisher.com/api/dmod-vapi"
         }
-    ]   
+    ],
+    "depends": [
+        "base10",
+        "metadata-panel"
+    ],
+    "features": {
+        "dts-mod": {
+            "metadata-panel": {
+                "enabled": true
+            }
+        }
+    }
 }

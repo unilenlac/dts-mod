@@ -1,0 +1,41 @@
+<template>
+    [% template after %]
+        [% if exists($context?doc) and $context?features?dts-mod?metadata-panel?enabled %]
+        <div class="metadata-panel">
+            <h2><pb-i18n key="dts-metadata.citation-opt.opt-label"/></h2>
+            <div class="citation-options">
+                <button type="button" id="citation-open" class="citation-option">Citation</button>
+                <button type="button" class="citation-option">Permalink</button>
+            </div>
+            <span style="display: inline-block; width: 100%; height: 0.5em;"></span>
+            <h2 class="metadata">
+                <pb-i18n key="odd.metadata"/><span style="display: inline-block; width: 0.7em;"></span>
+            </h2>
+            <pb-view src="document1" subscribe="transcription" view="single" disable-history="">
+                <pb-param name="mode" value="metadata-panel"/>
+            </pb-view>
+            <p>
+                [[ if (map:contains($request?parameters, "xmlId")) then $request?parameters?xmlId else () ]]
+            </p>
+            <dmod-endpoint-infos resource="[[ $context?doc?path ]]">
+                <pb-i18n key="dts-metadata.endpoint-infos"/>
+            </dmod-endpoint-infos>
+            <h2 class="citation">
+                <pb-i18n key="citation.suggestion"/>
+            </h2>
+            <h2><pb-i18n key="dts-metadata.options"/></h2>
+            <dmod-toggle action="hide-class" target-class="pb tei-cb">
+                <pb-i18n key="dts-metadata.toggles.remove-pb-cb"/> :
+            </dmod-toggle>
+            <span style="display: inline-block; width: 100%; height: 0.5em;"></span>
+            <dmod-toggle action="hide-class" target-class="footnotes note">
+                <pb-i18n key="dts-metadata.toggles.remove-notes"/> :
+            </dmod-toggle>
+            [% include "templates/components/modal.html" %]
+        </div>
+        
+        <script>
+        </script>
+        [% endif %]
+    [% endtemplate %]
+</template>

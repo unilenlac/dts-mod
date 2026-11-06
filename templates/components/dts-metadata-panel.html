@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DTS Metadata Panel</title>
+</head>
+<body>
+    <div class="dts-metadata-panel">
+        <h2 class="dts-title"></h2>
+        <ul class="dts-endpoints">
+            <li name="server">
+                <span class="label">DTS endpoint</span> :
+                <a href="[[ $server-link ]]">[[ $server-link ]]</a>
+            </li>
+            [% if $document-link != '' %]
+            <li name="dts-document">
+                <span class="label">Document</span> :
+                <a href="[[ $document-link ]]">[[ $document-link ]]</a>
+            </li>
+            [% endif %]
+            [% if $excerpt-link != '' %]
+            <li name="dts-excerpt">
+                <span class="label">Excerpt</span> :
+                <a href="[[ $excerpt-link ]]">[[ $excerpt-link ]]</a>
+            </li>
+            [% endif %]
+        </ul>
+    </div>
+</body>
+</html>

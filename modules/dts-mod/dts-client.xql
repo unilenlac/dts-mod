@@ -113,15 +113,10 @@ declare function dts-client:get-resource(
     $id as xs:string,
     $ref as xs:string?
 ) as document-node() {
-    let $_ := console:log($id)
-    let $_ := console:log($ref)
     let $url := dts-client:resource-url($id, $ref)
-    let $_ := console:log($url)
-    let $request :=
-        <http:request
-            method="GET"
-            href="{$url}"
-            override-media-type="application/xml"/>
+
+    (: default serialization is app/xml doc is a document-node() :)
+    let $request := <http:request method="GET" href="{$url}" override-media-type="application/xml"/>
     let $response := http:send-request($request)
     let $status := xs:integer($response[1]/@status)
     return
@@ -129,13 +124,15 @@ declare function dts-client:get-resource(
             (: the DTS resource content is already an XML document node it can be returned directly :)
             $response[2]
         else
-            error(
+            let $body := util:binary-to-string($response[2])
+            let $json := parse-json($body)
+            return error(
                 xs:QName("dts-client:HTTP-ERROR"),
                 concat(
                     "DTS resource request failed with HTTP status ",
                     $status,
                     ": ",
-                    $response[2]
+                    $json?error?message
                 )
             )
 };
@@ -164,7 +161,7 @@ declare function dts-client:get-navigation(
                     "DTS navigation request failed with HTTP status ",
                     $status,
                     ": ",
-                    $response[2]
+                    $response[2] => serialize()
                 )
             )
 };

@@ -143,21 +143,9 @@ declare function dapi:save ($request as map(*)) {
 };
 
 declare function dapi:source($request as map(*)) {
-    let $doc := xmldb:decode($request?parameters?id)
-    return
-        if ($doc) then
-            let $path := xmldb:encode-uri($config:data-root || "/" || $doc)
-            let $filename := replace($doc, "^.*/([^/]+)$", "$1")
-            let $mime := ($request?parameters?type, xmldb:get-mime-type($path))[1]
-            return
-                if (util:binary-doc-available($path)) then
-                    response:stream-binary(util:binary-doc($path), $mime, $filename)
-                else if (doc-available($path)) then
-                    router:response(200, $mime, doc($path))
-                else
-                    error($errors:NOT_FOUND, "Document " || $doc || " not found")
-        else
-            error($errors:BAD_REQUEST, "No document specified")
+    (:default mime-type is application/json, py-dts can return other type of document, if needed this part of the library must be extended:)
+    let $mime := $request?parameters?type
+    return dts-client:get-resource($request?parameters?id, ())
 };
 
 declare function dapi:html($request as map(*)) {
@@ -169,7 +157,7 @@ declare function dapi:print($request as map(*)) {
 };
 
 declare %private function dapi:generate-html($request as map(*), $outputMode as xs:string) {
-    let $doc := xmldb:decode($request?parameters?id)
+    let $xml := dts-client:get-resource($request?parameters?id, ())
     let $addStyles :=
         for $href in $request?parameters?style?*
         return
@@ -179,27 +167,22 @@ declare %private function dapi:generate-html($request as map(*), $outputMode as 
         return
             <script src="{$src}"></script>
     return
-        if ($doc) then
-            let $xml := config:get-document($doc)
-            return
-                if (exists($xml)) then
-                    let $config := tpu:parse-pi(root($xml), ())
-                    let $out :=
-                        if ($outputMode = 'print') then
-                            $pm-config:print-transform($xml, map { "root": $xml, "webcomponents": 7 }, $config?odd)
-                        else
-                            $pm-config:web-transform($xml, map { "root": $xml, "webcomponents": 7 }, $config?odd)
-                    let $styles := (
-                        $addStyles,
-                        if (count($out) > 1) then $out[1] else (),
-                        <link rel="stylesheet" type="text/css" href="transform/{replace($config?odd, "^.*?/?([^/]+)\.odd$", "$1")}.css"/>
-                    )
-                    return
-                        dapi:postprocess(($out[2], $out[1])[1], $styles, $addScripts, $request?parameters?base, $request?parameters?wc)
+        if (exists($xml)) then
+            let $config := tpu:parse-pi(root($xml), ())
+            let $out :=
+                if ($outputMode = 'print') then
+                    $pm-config:print-transform($xml, map { "root": $xml, "webcomponents": 7 }, $config?odd)
                 else
-                    error($errors:NOT_FOUND, "Document " || $doc || " not found")
+                    $pm-config:web-transform($xml, map { "root": $xml, "webcomponents": 7 }, $config?odd)
+            let $styles := (
+                $addStyles,
+                if (count($out) > 1) then $out[1] else (),
+                <link rel="stylesheet" type="text/css" href="transform/{replace($config?odd, "^.*?/?([^/]+)\.odd$", "$1")}.css"/>
+            )
+            return
+                dapi:postprocess(($out[2], $out[1])[1], $styles, $addScripts, $request?parameters?base, $request?parameters?wc)
         else
-            error($errors:BAD_REQUEST, "No document specified")
+            error($errors:NOT_FOUND, "Document " || $request?parameters?id || " not found")
 };
 
 declare function dapi:postprocess($nodes as node()*, $styles as element()*, $scripts as element()*,
@@ -304,13 +287,14 @@ declare function dapi:latex($request as map(*)) {
     let $id := xmldb:decode($request?parameters?id)
     let $token := $request?parameters?token
     let $source := $request?parameters?source
+    let $_ := console:log($id)
     return (
         if ($token) then
             response:set-cookie("simple.token", $token)
         else
             (),
         if ($id) then
-            let $xml := config:get-document($id)/*
+            let $xml := dts-client:get-resource($id, ())
             return
                 if (exists($xml)) then
                     let $config := tpu:parse-pi(root($xml), ())
@@ -334,10 +318,14 @@ declare function dapi:latex($request as map(*)) {
                                 </option>
                             let $outputPath := $config:tex-temp-dir || "/" || $file || ".pdf"
                             let $cleanup := if (file:exists($outputPath)) then file:delete($outputPath) else ()
+                            let $_ := console:log($file)
+                            let $_ := console:log($options)
                             let $output0 :=
                                 process:execute(
                                     ( $config:tex-command($file) ), $options
                                 )
+                            let $_ := console:log($id)
+                            let $_ := console:log(process:execute(("ls", "-l"), $options))
                             return
                                 if (not(file:exists($outputPath))) then
                                     error($errors:BAD_REQUEST, "LaTeX reported errors", dapi:latex-error($output0))
@@ -345,6 +333,7 @@ declare function dapi:latex($request as map(*)) {
                                     let $output :=
                                         for $i in 1 to 2
                                         return
+                                            
                                             process:execute(
                                                 ( $config:tex-command($file) ), $options
                                             )
@@ -399,8 +388,8 @@ declare function dapi:prepare-cache-collection() {
 declare function dapi:pdf($request as map(*)) {
     let $token := head(($request?parameters?token, "none"))[1]
     let $useCache := $request?parameters?cache
-    let $id := xmldb:decode($request?parameters?id)
-    let $doc := config:get-document($id)
+    let $id := $request?parameters?id
+    let $doc := dts-client:get-resource($id, ())
     let $config := tpu:parse-pi(root($doc), ())
     let $name := util:document-name($doc)
     return
@@ -449,11 +438,13 @@ declare function dapi:markdown($request as map(*)) {
 };
 
 declare function dapi:epub($request as map(*)) {
-    let $id := xmldb:decode($request?parameters?id)
-    let $work := config:get-document($id)
+    let $_ := console:log("document.xql 434")
+    let $id := $request?parameters?id
+    let $work := dts-client:get-resource($id, ())
     return
         if (exists($work)) then
             let $entries := dapi:work2epub($request, $id, $work, $request?parameters?lang)
+            let $_ := console:log("document.xql 441")
             return
                 (
                     if ($request?parameters?token) then
@@ -486,8 +477,10 @@ declare %private function dapi:work2epub($request as map(*), $id as xs:string, $
     let $css := $cssDefault ||
         "&#10;/* styles imported from epub.css */&#10;" ||
         $cssEpub
+    let $_ := console:log("document.xql 473")
     return
-        epub:generate-epub($config, $work/*, $css, $id)
+        epub:generate-epub($config, $work, $css, $id)
+    
 };
 
 declare %private function dapi:merge-fragment($node as node(), $fragment as element()) as node()* {
@@ -641,7 +634,6 @@ declare %private function dapi:extract-footnotes($html as element()*, $root as n
 };
 
 declare function dapi:table-of-contents($request as map(*)) {
-    let $_ := console:log($request?parameters)
     let $collapse := $request?parameters?collapse
     let $docId := $request?parameters?id
     let $navigation := dts-client:get-navigation($docId, (), -1)

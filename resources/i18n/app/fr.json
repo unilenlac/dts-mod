@@ -1,0 +1,22 @@
+{
+    "dts-metadata": {
+        "endpoint-infos": "Infos endpoint DTS",
+        "endpoint": "Point de terminaison :",
+        "resource": "Ressource :",
+        "excerpt": "Extrait :",
+        "citation": "Suggestion de citation",
+        "options": "Options de mise en page",
+        "toggles": {
+            "remove-pb-cb": "Supprimer les pb/cb",
+            "remove-notes": "Supprimer les notes"
+        },
+        "citation-opt": {
+            "opt-label": "Options de citation"
+        }
+    },
+    "odd": {
+        "licence": "Licence",
+        "sources": "Sources",
+        "metadata": "Métadonnées"
+    }
+}

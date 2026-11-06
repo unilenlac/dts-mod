@@ -75,6 +75,7 @@ declare function capi:list-dts($request as map(*)) as element(div) {
         if (doc-available($full_path))
         then 
         let $model := map:merge((vapi:load-config-json($request), map { "documents": $works, "language": $request?parameters?language }))
+        let $_ := $template
         return tmpl:process($template, $model, map { 
             "plainText": false(),
             "resolver": vapi:resolver#1,
