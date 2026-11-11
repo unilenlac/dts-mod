@@ -52,8 +52,22 @@ declare function capi:list-dts($request as map(*)) as element(div) {
         dts-client:get-collection(
             $collection-id,
             $page,
-            $per-page
+            $per-page,
+            ()
         )
+    let $parent := map:get($collection, "@id")
+    let $parent_collection :=
+        dts-client:get-collection(
+            $collection-id,
+            $page,
+            $per-page,
+            "parents"
+        )
+    
+    let $parent_works := map:get($parent_collection, "member")
+    let $parent_work := if (exists($parent_works) and array:size($parent_works) gt 0) then $parent_works(1) else ()
+    
+    let $parent_id := if (exists($parent_work)) then map:get($parent_work, "@id") || "/" || $parent else $parent
     let $works := map:get($collection, "member")
     let $total :=
         if (exists($collection?totalChildren))
@@ -74,7 +88,7 @@ declare function capi:list-dts($request as map(*)) as element(div) {
         ),
         if (doc-available($full_path))
         then 
-        let $model := map:merge((vapi:load-config-json($request), map { "documents": $works, "language": $request?parameters?language }))
+        let $model := map:merge((vapi:load-config-json($request), map { "parent_id": $parent_id, "documents": $works, "language": $request?parameters?language }))
         let $_ := $template
         return tmpl:process($template, $model, map { 
             "plainText": false(),

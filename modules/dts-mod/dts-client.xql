@@ -43,7 +43,8 @@ declare function dts-client:ping() as item()* {
 declare function dts-client:collection-url(
     $id as xs:string?,
     $page as xs:integer,
-    $limit as xs:integer
+    $limit as xs:integer,
+    $nav as xs:string?
 ) as xs:anyURI {
 
     let $base-url :=
@@ -55,9 +56,11 @@ declare function dts-client:collection-url(
             "?id=" || encode-for-uri(normalize-space($id))
             || "&amp;page=" || $page
             || "&amp;limit=" || $limit
+            || (if (exists($nav) and normalize-space($nav) ne "") then "&amp;nav=" || encode-for-uri(normalize-space($nav)) else "")
         else
             "?page=" || $page
             || "&amp;limit=" || $limit
+            || (if (exists($nav) and normalize-space($nav) ne "") then "&amp;nav=" || encode-for-uri(normalize-space($nav)) else "")
 
     return
         xs:anyURI($base-url || $query)
@@ -237,7 +240,8 @@ declare function dts-client:get-previous(
 declare function dts-client:get-collection(
     $id as xs:string?,
     $page as xs:integer,
-    $limit as xs:integer
+    $limit as xs:integer,
+    $nav as xs:string?
 ) as map(*) {
 
     if ($page lt 1) then
@@ -252,7 +256,7 @@ declare function dts-client:get-collection(
         )
     else
         let $url :=
-            dts-client:collection-url($id, $page, $limit)
+            dts-client:collection-url($id, $page, $limit, $nav)
 
         let $request :=
             <http:request

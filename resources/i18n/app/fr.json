@@ -1,5 +1,6 @@
 {
     "dts-metadata": {
+        "collection-list": "Collections",
         "endpoint-infos": "Infos endpoint DTS",
         "endpoint": "Point de terminaison :",
         "resource": "Ressource :",

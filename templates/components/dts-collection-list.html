@@ -8,8 +8,11 @@
 <body>
     <div class="collection">
 
-        <ul>
-            <h1>[[ $custom-config:dts-server ]]</h1>
+        <ul data-root="[[ $parent_id ]]">
+            <!--
+            <h1><pb-i18n key="dts-metadata.collection-list"></pb-i18n></h1>
+            -->
+            <span style="display: inline-block; width: 100%; height: 0.9em;"></span>
             [% if count($documents?*) %]
             [% for $work in $documents?* %]
             [% if 'resource' = lower-case($work?('@type')) %]

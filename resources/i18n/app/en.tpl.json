@@ -1,5 +1,6 @@
 {
     "dts-metadata": {
+        "collection-list": "Collections",
         "endpoint-infos": "DTS Endpoint Information",
         "endpoint": "Endpoint:",
         "resource": "Resource:",
