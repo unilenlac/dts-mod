@@ -512,6 +512,8 @@ declare function dapi:get-fragment($request as map(*)) {
     let $dts-fragment := dts-client:get-resource($path, $id)//dts:wrapper
     
     let $template := config:get-document("template.xml")
+    let $_ := console:log($template)
+    let $_ := console:log($dts-fragment)
     let $fragment := dapi:merge-fragment($template, $dts-fragment)
     
     let $config := tpu:parse-pi($doc, ())

@@ -1,0 +1,65 @@
+<template>
+    ---json
+    {
+        "features": {
+            "toolbar": {
+                "navigation": false,
+                "progress": {
+                    "subscribe": "results"
+                }
+            },
+            "upload": {
+                "enabled": false
+            },
+            "timeline": {
+                "enabled": false
+            }
+        },
+        "templating": {
+            "extends": "templates/layouts/content.html"
+        },
+        "script": {
+            "custom": [
+                "resources/scripts/facets.js"
+            ]
+        }
+    }
+    ---
+    [% template styles %]
+    <style>
+        .search-page pb-search,
+        .search-page pb-custom-form,
+        .search-page pb-load {
+            display: block;
+        }
+
+        .search-page .facets {
+            margin: 1rem 0;
+        }
+    </style>
+    [% endtemplate %]
+
+    [% template breadcrumb %]
+    <li>
+        <nav aria-label="breadcrumb">
+            <ul>
+                <li><a href="[[ $context-path ]]/browse.html"><pb-i18n key="breadcrumb.collection-root"/></a></li>
+                <li><pb-i18n key="search.results"/></li>
+            </ul>
+        </nav>
+    </li>
+    [% endtemplate %]
+
+    <main class="search-page">
+        <section>
+            <pb-search id="search-form" subscribe="search" value="[[ page:parameter($context, 'query', '') ]]" submit-on-load="submit-on-load" subforms=".facets">
+                <button slot="searchButton"><pb-i18n key="search.search">Search</pb-i18n></button>
+                <input type="hidden" name="field" value="text"/>
+            </pb-search>
+            <pb-custom-form class="facets" url="api/search/facets" subscribe="results" event="pb-results-received" emit="search"/>
+        </section>
+        <section>
+            <pb-load class="results" url="api/search" subscribe="search" emit="results"/>
+        </section>
+    </main>
+</template>

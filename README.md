@@ -70,4 +70,8 @@ this web component allows you to add a toggle button in a 'option' if needed. fo
 
 ### todo
 
-- add allow multiple source selection (remote, local)
+- enable separate full-text/facet search :
+    - FTS and facet search are not available trough a DTS endpoint, there is a need to a segregation between the serach feature provided by existdb and the main teipublisher app that is fueled with DTS data. worfklow suggested. move the serach feature into another paart of the publication, create a copy of the database inside the running existdb database in order to leverage the index feature of existdb (lucene), use normaly the search feature on this part of the web app, enrich the result with dts references and use them to navigate to the corresponding published element on the main part of the app. the search workflow is would be globally the following one:
+        send serach input -> app -- show hits -- > app -- find dts reference --> app -- build/generate template -> return html and results
+    once the results are displayed, the user is able to navigate to the corresponding part of the edition with the dts metadata provided with the displayed results
+    Also, the 'find dts reference' feature is already provided on the dts enpoint. the feature is available at the /find-reference route
