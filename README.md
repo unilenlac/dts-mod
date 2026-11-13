@@ -134,10 +134,10 @@ in this example, we exclude the unpublished files from the local database:
 
 ## note about the search feature
 
-teh ersearch feature is retrieving data from the local existdb and the remote dts endpoint. In order to havec the search feature running correctly there is two conditions :
+the search feature is retrieving data from the local existdb database and the remote dts endpoint. In order to have the dts-mod search feature running correctly, there is two conditions :
 
-1. you must have a running dts endpoint
-2. your dts endpoint must implement a reverse reference finding feature. the schema must be declared like bellow.
+1. you must have a running and accessible dts endpoint
+2. your dts endpoint must implement a reverse reference finding feature, that follows this contract schema :
 
 ```
 "/api/dts/v1/document/find-reference":{
@@ -217,7 +217,7 @@ dts-dmod will then have a route to submit an xml element and return the dts corr
 
 If you don't want to use this feature feel free to exclude the search.html page from you app.
 
-**reminder** the find-reference feature is included inside the [pydts]("https://github.com/rerouj/py-dts") implementation of the DTS specifications.
+**reminder** the find-reference feature is included inside the pydts("https://github.com/rerouj/py-dts") implementation of the DTS specifications.
 
 ### todos
 
