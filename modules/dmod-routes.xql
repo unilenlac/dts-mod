@@ -30,18 +30,6 @@ import module namespace tpu="http://www.tei-c.org/tei-publisher/util" at "../lib
 import module namespace page="http://teipublisher.com/ns/templates/page" at "../../templates/page.xqm";
 
 (:~
- : Keep this. This function does the actual lookup in the imported modules.
- :)
-declare function dmod:lookup($name as xs:string, $arity as xs:integer) {
-    try {
-        function-lookup(xs:QName($name), $arity)
-    } catch * {
-        ()
-    }
-};
-
-
-(:~
 : Retrieve information about the available endpoints in the dts-mod module
 : @param $request a map representing the API request
 : @param $ref an optional reference to be included in the rendered HTML

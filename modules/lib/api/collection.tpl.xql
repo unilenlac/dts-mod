@@ -20,14 +20,17 @@ declare function capi:list($request as map(*)) {
         (: todo create a fallback in case the DTS is not available. the fallback will redirect to the capi:list function :)
     
     let $collection := if (map:contains($request?parameters, "collection")) then $request?parameters?collection else ()
+    let $params := capi:params2map($collection)
+    let $cached := session:get-attribute($config:session-prefix || ".collection")
+    let $useCached := capi:use-cache($params, $cached)
     
     (: check if the DTS endpoint is available :)
     
     let $status := serialize(dts-client:ping(), map { "method": "json" })
-    return capi:list-dts($request)
+    return capi:list-dts($request, if ($useCached) then $cached else (), $params)
     
 };
-declare function capi:list-dts($request as map(*)) as element(div) {
+declare function capi:list-dts($request as map(*), $cached, $params as map(*)) as element(div) {
     let $path := $request?parameters?path
     let $per-page := $request?parameters?per-page
     let $start :=
@@ -46,7 +49,9 @@ declare function capi:list-dts($request as map(*)) as element(div) {
         then $path
         else ()
 
-    let $collection :=
+    let $collection := if (exists($cached)) then 
+        $cached
+    else
         dts-client:get-collection(
             $collection-id,
             $page,
@@ -75,6 +80,10 @@ declare function capi:list-dts($request as map(*)) as element(div) {
     let $template := config:resolve($config:template_path) => serialize()
 
     return (
+        session:set-attribute($config:session-prefix || ".timestamp", current-dateTime()),
+        session:set-attribute($config:session-prefix || '.params', $params),
+        session:set-attribute($config:session-prefix || ".collection", $collection),
+        session:set-attribute($config:session-prefix || ".parent_id", $parent_id),
         response:set-header(
             "pb-start",
             xs:string($start)
