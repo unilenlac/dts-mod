@@ -114,13 +114,13 @@ this web component allows you to add a toggle button in a 'option' if needed. fo
 
 dmod is using a dts endpoint to retrieve text content based on citation references. the requests will provide text content, navigation or metadata values based on what the endpoint can provide and what is inside the running data storage behind the dts enpoint.
 
-In a perfect world, the datastore that is behind the dts endpoint is the existdb that is behind your TPUB web app.
+In a perfect world, the datastore that is behind the dts endpoint is the existdb database that is behind your teipublisher web app.
 
-But you can also have a non existdb data sources. In this case xml files must also be stored inside the existdb underneath the teipublisher app. This is what you should do, if you want to use the index/search features provided by existdb (lucene).
+But you can also have a non existdb database behind your dts endpoint. In this case xml files must also be stored inside the existdb underneath the teipublisher app. This is what you should do, if you want to use the index/search features provided by existdb (lucene) and the dts-mod module.
 
-This is comming with on caveat. The data stored inside the existdb can differ from what is actually served by the dts endpoint. this divergence can be mitigated differently. at the TPUB/Jinks level you can use an exclude filter in order to sync the existdb data source and the dts enpoint.
+This is comming with one caveat. the data stored inside the existdb can differ from what is actually served by the dts endpoint. this divergence can be mitigated differently. at the TPUB/Jinks level you can use an exclude filter in order to sync the existdb data source and the dts enpoint.
 
-example:
+in this example, we exclude the unpublished files from the local database:
 
 ```
   "defaults": {
@@ -132,7 +132,7 @@ example:
   },
 ```
 
-## note about the research feature
+## note about the search feature
 
 teh ersearch feature is retrieving data from the local existdb and the remote dts endpoint. In order to havec the search feature running correctly there is two conditions :
 
