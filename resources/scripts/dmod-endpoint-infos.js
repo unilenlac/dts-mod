@@ -58,8 +58,8 @@ class DmodEndpointInfos extends HTMLElement {
 
     get ref() {
         return this._eventRef
-            || this.getAttribute('ref')
-            || new URLSearchParams(window.location.search).get('ref');
+            || this.getAttribute('id')
+            || new URLSearchParams(window.location.search).get('id');
     }
 
     async buildUrl() {

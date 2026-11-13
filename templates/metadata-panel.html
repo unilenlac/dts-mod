@@ -14,9 +14,6 @@
             <pb-view src="document1" subscribe="transcription" view="single" disable-history="">
                 <pb-param name="mode" value="metadata-panel"/>
             </pb-view>
-            <p>
-                [[ if (map:contains($request?parameters, "xmlId")) then $request?parameters?xmlId else () ]]
-            </p>
             <dmod-endpoint-infos resource="[[ $context?doc?path ]]">
                 <pb-i18n key="dts-metadata.endpoint-infos"/>
             </dmod-endpoint-infos>

@@ -21,7 +21,14 @@ Profile config (default settings) :
 ```json   
 "dts-mod": {
         "dts-endpoint": "http://host.docker.internal:8000/api/dts/v1/",
-        "public-dts-endpoint": "http://localhost:8000/api/dts/v1/"
+        "public-dts-endpoint": "http://localhost:8000/api/dts/v1/",
+        "resource-identifier": {
+            "element": {
+                "namespace": "http://www.tei-c.org/ns/1.0",
+                "name": "TEI"
+            },
+            "source": "document-name"
+        }
     },
     "script": {
         "custom": [
@@ -58,6 +65,8 @@ Profile config (default settings) :
         }
     }
 ```
+
+    `resource-identifier` configures the DTS resource-level identifier (not a passage `ref`). Set `element.namespace` and `element.name` to the XML element representing the resource. Set `source` to `xml-id` to use that element's `xml:id`, or `document-name` to use the source filename without its extension. The default targets the TEI root and uses the filename.
 
 ### custom components
 the custom components provided here are not bundled with the pb-component library in order to avoid extra maintenance overhead.

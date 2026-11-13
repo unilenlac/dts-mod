@@ -14,8 +14,6 @@ import module namespace router="http://e-editiones.org/roaster";
 import module namespace tmpl="http://e-editiones.org/xquery/templates";
 
 import module namespace console="http://exist-db.org/xquery/console";
-
-import module namespace custom-config = "http://www.tei-c.org/tei-simple/custom-config" at "../../custom-config.xqm";
 import module namespace dts-client = "http://www.tei-c.org/tei-publisher/dts-client" at "../../dts-mod/dts-client.xql";
 
 declare function capi:list($request as map(*)) {
@@ -59,11 +57,10 @@ declare function capi:list-dts($request as map(*)) as element(div) {
     let $parent_collection :=
         dts-client:get-collection(
             $collection-id,
-            $page,
-            $per-page,
+            1,
+            10,
             "parents"
         )
-    
     let $parent_works := map:get($parent_collection, "member")
     let $parent_work := if (exists($parent_works) and array:size($parent_works) gt 0) then $parent_works(1) else ()
     
@@ -74,8 +71,8 @@ declare function capi:list-dts($request as map(*)) as element(div) {
         then xs:integer($collection?totalChildren)
         else count($works)
 
-    let $full_path := $config:app-root || $custom-config:template_path
-    let $template := config:resolve($custom-config:template_path) => serialize()
+    let $full_path := $config:app-root || $config:template_path
+    let $template := config:resolve($config:template_path) => serialize()
 
     return (
         response:set-header(
@@ -94,10 +91,6 @@ declare function capi:list-dts($request as map(*)) as element(div) {
             "plainText": false(),
             "resolver": vapi:resolver#1,
                 "modules": map {
-                    "http://www.tei-c.org/tei-simple/custom-config": map {
-                        "prefix": "custom-config",
-                        "at": "modules/custom-config.xqm"
-                    },
                     "http://www.tei-c.org/tei-simple/config": map {
                         "prefix": "config",
                         "at": "modules/config.xqm"

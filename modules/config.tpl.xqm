@@ -629,3 +629,19 @@ declare function config:get-fonts-dir() as xs:string? {
         else
             ()
 };
+
+(: DTS configuration :)
+
+declare function config:get-template() {
+    doc(xmldb:encode-uri("/db/apps/tmpapp/data/template.xml"))
+};
+
+declare variable $config:template_path := "/templates/components/dts-collection-list.html";
+
+declare variable $config:dts-server := "[[ $context?dts-mod?dts-endpoint ]]";
+declare variable $config:public-dts-server := "[[ $context?dts-mod?public-dts-endpoint ]]";
+declare variable $config:resource-id-element-namespace := "[[ $context?dts-mod?resource-identifier?element?namespace ]]";
+declare variable $config:resource-id-element-name := "[[ $context?dts-mod?resource-identifier?element?name ]]";
+declare variable $config:resource-id-source := "[[ $context?dts-mod?resource-identifier?source ]]";
+
+declare variable $config:dts-root-collection := "collection";

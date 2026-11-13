@@ -7,7 +7,14 @@
     "version": "1.0.0",
     "dts-mod": {
         "dts-endpoint": "http://host.docker.internal:8000/api/dts/v1/",
-        "public-dts-endpoint": "http://localhost:8000/api/dts/v1/"
+        "public-dts-endpoint": "http://localhost:8000/api/dts/v1/",
+        "resource-identifier": {
+            "element": {
+                "namespace": "http://www.tei-c.org/ns/1.0",
+                "name": "TEI"
+            },
+            "source": "document-name"
+        }
     },
     "script": {
         "custom": [
@@ -40,6 +47,20 @@
         "dts-mod": {
             "metadata-panel": {
                 "enabled": true
+            }
+        }
+    },
+    "menu": {
+        "search": false,
+        "items": [{
+            "url": "search.html",
+            "id": "Search"
+        }]
+    },
+    "theme": {
+        "layout": {
+        "before": {
+            "hidden": true
             }
         }
     }

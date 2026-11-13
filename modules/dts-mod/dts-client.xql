@@ -2,21 +2,52 @@ xquery version "3.1";
 
 module namespace dts-client = "http://www.tei-c.org/tei-publisher/dts-client";
 
-import module namespace custom-config = "http://www.tei-c.org/tei-simple/custom-config"
-    at "../custom-config.xqm";
-
 import module namespace http = "http://expath.org/ns/http-client"
     at "h";
 
 import module namespace util = "http://exist-db.org/xquery/util";
-import module namespace console = "http://exist-db.org/xquery/console";
 import module namespace errors = "http://e-editiones.org/roaster/errors";
+
+import module namespace console = "http://exist-db.org/xquery/console";
+import module namespace config = "http://www.tei-c.org/tei-simple/config" at "../config.xqm";
+
+declare %private function dts-client:api-root() as xs:string {
+    replace(normalize-space($config:dts-server), "/+$", "")
+};
+
+declare function dts-client:find-reference(
+    $resource as xs:string,
+    $fragment as node()*
+) {
+    try {
+        let $url := dts-client:api-root() || "/document/find-reference?resource=" || encode-for-uri($resource)
+        let $request :=
+            <http:request method="POST" timeout="3">
+                <http:header name="Accept" value="application/json"/>
+                <http:body media-type="application/xml"/>
+            </http:request>
+        let $response := http:send-request($request, $url, $fragment)
+        let $status := xs:integer($response[1]/@status)
+        let $response-body :=
+            if ($response[2] instance of xs:base64Binary or $response[2] instance of xs:hexBinary) then
+                util:binary-to-string($response[2])
+            else
+                string($response[2])
+        return
+            if ($status ge 200 and $status lt 300) then
+                parse-json($response-body)
+            else
+                ()
+    } catch * {
+        ()
+    }
+};
 
 
 (: ping the DTS server to check its availability :)
 declare function dts-client:ping() as item()* {
     try {
-        let $url := $custom-config:dts-server
+        let $url := $config:dts-server
         let $request :=
             <http:request
                 status-only="true"
@@ -48,7 +79,7 @@ declare function dts-client:collection-url(
 ) as xs:anyURI {
 
     let $base-url :=
-        $custom-config:dts-server || "/collection"
+        dts-client:api-root() || "/collection"
 
     let $query :=
         if (exists($id) and normalize-space($id) ne "")
@@ -77,7 +108,7 @@ declare function dts-client:resource-url(
 ) as xs:anyURI {
 
     let $base-url :=
-        $custom-config:dts-server || "/document"
+        dts-client:api-root() || "/document"
 
     let $query :=
         "?resource=" || encode-for-uri(normalize-space($id))
@@ -94,7 +125,7 @@ declare function dts-client:navigation-url(
 ) as xs:anyURI {
 
     let $base-url :=
-        $custom-config:dts-server || "/navigation"
+        dts-client:api-root() || "/navigation"
 
     let $query :=
         "?resource=" || encode-for-uri(normalize-space($id))
